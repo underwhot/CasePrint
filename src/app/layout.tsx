@@ -21,12 +21,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${inter.className} min-h-screen flex flex-col`}
-      >
+      <body className={`${inter.className} flex min-h-screen flex-col`}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="lignt"
+          defaultTheme="light"
           // enableSystem
           disableTransitionOnChange
         >
