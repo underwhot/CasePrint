@@ -1,7 +1,8 @@
 import { Check, Star } from "lucide-react";
 import Image from "next/image";
+import FeaturesList from "./featuresList";
 
-const features = [
+const heroFeatures = [
   {
     title: "High-quality, durable material",
   },
@@ -15,11 +16,11 @@ const features = [
 
 export default function Hero() {
   return (
-    <section className="container flex md:flex-row flex-col gap-10 items-center py-10 md:py-20 lg:py-24">
-      <div className="space-y-8 flex-[0_0_60%] text-center md:text-left">
-        <h1 className="font-bold text-4xl md:text-5xl lg:text-6xl leading-snug">
+    <section className="container flex flex-col items-center gap-10 py-10 md:flex-row md:py-20 lg:py-24">
+      <div className="flex-[0_0_60%] space-y-8 text-center md:text-left">
+        <h1 className="text-4xl font-bold !leading-tight md:text-5xl lg:text-6xl">
           Your Image on a{" "}
-          <span className="bg-primary px-2 text-white inline-block">
+          <span className="inline-block bg-primary px-2 text-white">
             Custom
           </span>{" "}
           Phone Case
@@ -31,27 +32,17 @@ export default function Hero() {
           case.
         </p>
 
-        <ul className="inline-block">
-          {features.map((feature) => (
-            <li
-              key={feature.title}
-              className="flex gap-1 items-center text-left"
-            >
-              <Check className="h-5 w-5 shrink-0 text-primary" />
-              {feature.title}
-            </li>
-          ))}
-        </ul>
+        <FeaturesList features={heroFeatures} />
 
-        <div className="flex gap-3 items-center justify-center md:justify-start flex-wrap">
+        <div className="flex flex-wrap items-center justify-center gap-3 md:justify-start">
           <ul className="flex -space-x-4">
             {Array.from({ length: 5 }, (_, index) => (
               <li
                 key={index}
-                className="rounded-full overflow-hidden border-2 border-border flex-[0_0_40px] box-content"
+                className="box-content flex-[0_0_40px] overflow-hidden rounded-full border-2 border-border"
               >
                 <Image
-                  className="object-cover size-10"
+                  className="size-10 object-cover"
                   src={`/users/user-${index + 1}.jpg`}
                   width={40}
                   height={40}
@@ -66,7 +57,7 @@ export default function Hero() {
               {Array.from({ length: 5 }, (_, index) => (
                 <Star
                   key={index}
-                  className="text-primary size-4"
+                  className="size-4 text-primary"
                   fill="currentColor"
                 />
               ))}
@@ -78,7 +69,7 @@ export default function Hero() {
         </div>
       </div>
 
-      <div className="flex justify-center flex-1">
+      <div className="flex flex-1 justify-center">
         <div className="relative">
           <Image
             src="/phone-template.png"
@@ -90,12 +81,12 @@ export default function Hero() {
           <img
             src="/your-image.png"
             alt=""
-            className="absolute w-36 left-56 -top-16 sm:-top-20 select-none hidden min-[1350px]:block sm:w-52"
+            className="absolute -top-16 left-56 hidden w-36 select-none sm:-top-20 sm:w-52 min-[1350px]:block"
           />
           <img
             src="/line.png"
             alt=""
-            className="absolute w-20 -left-6 -bottom-6 select-none"
+            className="absolute -bottom-6 -left-6 w-20 select-none"
           />
         </div>
       </div>
