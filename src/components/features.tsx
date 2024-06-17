@@ -49,6 +49,7 @@ export default function Features() {
             height="490"
             alt="Picture on case"
             className="h-auto w-full"
+            priority
           />
         </div>
       </div>
@@ -56,7 +57,7 @@ export default function Features() {
       <FeaturesList features={mainFeatures} xl />
 
       <Button asChild variant="default">
-        <Link href="/create" className="flex gap-2">
+        <Link href="/upload" className="flex gap-2">
           Create your case now <ArrowRight />
         </Link>
       </Button>

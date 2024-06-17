@@ -21,7 +21,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.className} flex min-h-screen flex-col`}>
+      <body
+        className={`${inter.className} flex min-h-screen flex-col overflow-y-scroll`}
+      >
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
@@ -30,7 +32,7 @@ export default function RootLayout({
         >
           <Header />
 
-          <main className="flex-1 pt-[60px]">{children}</main>
+          <main className="flex flex-1 flex-col pt-[60px]">{children}</main>
 
           <Footer />
         </ThemeProvider>

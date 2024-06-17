@@ -9,7 +9,19 @@ import { ArrowRight, Menu, X } from "lucide-react";
 import { useOnClickOutside } from "usehooks-ts";
 import { getScrollbarWidth } from "@/lib/utils";
 
-export default function Navbar() {
+type NavbarProps = {
+  signInUrl: string;
+  signUpUrl: string;
+  user: any;
+  handleSignOut: () => Promise<void>;
+};
+
+export default function Navbar({
+  signInUrl,
+  signUpUrl,
+  user,
+  handleSignOut,
+}: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const navRef = useRef(null);
   const navBtn = useRef(null);
@@ -64,16 +76,36 @@ export default function Navbar() {
         }`}
       >
         <ul className="flex flex-col items-center gap-4 overflow-auto bg-transparent sm:flex-row">
-          <li>
-            <Button asChild variant="ghost">
-              <Link href="/signup">Sign up</Link>
-            </Button>
-          </li>
-          <li>
-            <Button asChild variant="ghost">
-              <Link href="/login">Login</Link>
-            </Button>
-          </li>
+          {!user && (
+            <>
+              <li>
+                <Button asChild variant="ghost">
+                  <Link href={signInUrl}>Login</Link>
+                </Button>
+              </li>
+
+              <li>
+                <Button asChild variant="ghost">
+                  <Link href={signUpUrl}>Sign up</Link>
+                </Button>
+              </li>
+            </>
+          )}
+
+          {user && (
+            <>
+              <li>
+                <p className="text-sm">{user.email}</p>
+              </li>
+              <li>
+                <form action={handleSignOut}>
+                  <Button type="submit" variant="ghost">
+                    Sign out
+                  </Button>
+                </form>
+              </li>
+            </>
+          )}
 
           <Separator orientation="vertical" className="h-auto self-stretch" />
 
@@ -85,7 +117,7 @@ export default function Navbar() {
 
           <li>
             <Button asChild variant="default">
-              <Link href="/create" className="flex gap-2">
+              <Link href="/upload" className="flex gap-2">
                 Create case <ArrowRight />
               </Link>
             </Button>
