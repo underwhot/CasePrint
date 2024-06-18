@@ -1,48 +1,57 @@
 "use client";
 
 import { Progress } from "@/components/ui/progress";
+import { useUploadThing } from "@/lib/uploadthing";
 import {
   ArrowRight,
   Image,
   Loader2,
   MousePointerSquareDashed,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import Dropzone from "react-dropzone";
+import Dropzone, { FileRejection } from "react-dropzone";
+import { useToast } from "@/components/ui/use-toast";
+import Steps from "@/components/steps";
 
 export default function UploadPage() {
   const [isDragOver, setIsDragOver] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
+  const { toast } = useToast();
 
-  const onDropAccepted = () => {};
+  const { startUpload, isUploading } = useUploadThing("imageUploader", {
+    onClientUploadComplete: ([data]) => {
+      const configId = data.serverData.configId;
+      startTransition(() => {
+        router.push(`/configure/design/${configId}`);
+      });
+    },
+    onUploadProgress: (progress) => {
+      setUploadProgress(progress);
+    },
+  });
 
-  const onDropRejected = () => {};
+  const onDropAccepted = (acceptedFiles: File[]) => {
+    startUpload(acceptedFiles, { configId: undefined });
+    setIsDragOver(false);
+  };
 
-  const isUploading = false;
+  const onDropRejected = (rejectedFiles: FileRejection[]) => {
+    const [file] = rejectedFiles;
+    setIsDragOver(false);
+
+    toast({
+      title: `${file.file.type} type is not supported.`,
+      description: "Please upload a PNG or JPEG image.",
+      variant: "destructive",
+    });
+  };
 
   return (
     <section className="container flex flex-1 flex-col gap-8 py-10">
-      <ul className="flex flex-wrap gap-4 [&>*]:flex-[1_1_200px]">
-        <li className="rounded-lg bg-muted p-4 text-center">
-          <div className="text-lg">Step 1: Upload image</div>
-          <div className="text-sm text-muted-foreground">
-            Choose an image for your case
-          </div>
-        </li>
-        <li className="rounded-lg bg-muted p-4 text-center opacity-50">
-          <div className="text-lg">Step 2: Customize design</div>
-          <div className="text-sm text-muted-foreground">
-            Make the case yours
-          </div>
-        </li>
-        <li className="rounded-lg bg-muted p-4 text-center opacity-50">
-          <div className="text-lg">Step 3: Summary</div>
-          <div className="text-sm text-muted-foreground">
-            Review your final design
-          </div>
-        </li>
-      </ul>
+      <Steps />
 
       <div className="flex h-full w-full flex-1">
         <Dropzone
@@ -59,9 +68,9 @@ export default function UploadPage() {
           {({ getRootProps, getInputProps }) => (
             <div
               {...getRootProps()}
-              className="flex w-full cursor-pointer flex-col items-center justify-center rounded-lg bg-muted transition hover:bg-muted/50 sm:p-10"
+              className="flex w-full cursor-pointer flex-col items-center justify-center rounded-lg bg-muted p-4 transition hover:bg-muted/50 sm:p-10"
             >
-              <input {...getInputProps()} className="" />
+              <input {...getInputProps()} />
               {isDragOver ? (
                 <MousePointerSquareDashed className="h-6 w-6" />
               ) : isUploading || isPending ? (
@@ -73,7 +82,7 @@ export default function UploadPage() {
                 {isUploading ? (
                   <div className="flex flex-col items-center gap-3">
                     <p>Uploading...</p>
-                    <Progress value={uploadProgress} className="" />
+                    <Progress value={uploadProgress} />
                   </div>
                 ) : isPending ? (
                   <div className="flex flex-col items-center gap-3">
@@ -82,9 +91,7 @@ export default function UploadPage() {
                 ) : isDragOver ? (
                   <p>Drop file to upload</p>
                 ) : (
-                  <p>
-                    Drag and drop an image here, or click to select an image
-                  </p>
+                  <p>Drag and drop or click to select an image</p>
                 )}
 
                 {isPending ? null : (

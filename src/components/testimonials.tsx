@@ -3,7 +3,7 @@ import Image from "next/image";
 import TagH2 from "./tag-h2";
 import { wrapAccentInSpan } from "@/lib/utils";
 
-const customersTestimonials = [
+const TESTIMONIALS = [
   {
     name: "Jonathan",
     text: "The case feels durable and I even got a compliment on the design. Had the case for two and a half months now and the image is super clear, on the case I had before, the image started fading into yellow-ish color after a couple weeks. Love it.",
@@ -20,13 +20,13 @@ const customersTestimonials = [
 
 export default function Testimonials() {
   return (
-    <section className="container md:py-20 py-10">
+    <section className="container py-10 md:py-20">
       <TagH2 accent="customers">What our customers say</TagH2>
 
       <div className="flex flex-col gap-10 sm:flex-row lg:justify-evenly [&>*]:[flex:0_1_50%] lg:[&>*]:[flex:0_1_40%]">
-        {customersTestimonials.map((customer, idx) => (
-          <TestimonialCard key={customer.name + idx} {...customer}>
-            {customer.text}
+        {TESTIMONIALS.map((testimonial, idx) => (
+          <TestimonialCard key={testimonial.name + idx} {...testimonial}>
+            {testimonial.text}
           </TestimonialCard>
         ))}
       </div>

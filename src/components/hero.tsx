@@ -2,7 +2,7 @@ import { Check, Star } from "lucide-react";
 import Image from "next/image";
 import FeaturesList from "./featuresList";
 
-const heroFeatures = [
+const HERO_FEATURES = [
   {
     title: "High-quality, durable material",
   },
@@ -32,7 +32,7 @@ export default function Hero() {
           case.
         </p>
 
-        <FeaturesList features={heroFeatures} />
+        <FeaturesList features={HERO_FEATURES} />
 
         <div className="flex flex-wrap items-center justify-center gap-3 md:justify-start">
           <ul className="flex -space-x-4">

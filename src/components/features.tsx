@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 
-const mainFeatures = [
+const MAIN_FEATURES = [
   {
     title: "High-quality silicone material",
   },
@@ -54,7 +54,7 @@ export default function Features() {
         </div>
       </div>
 
-      <FeaturesList features={mainFeatures} xl />
+      <FeaturesList features={MAIN_FEATURES} xl />
 
       <Button asChild variant="default">
         <Link href="/upload" className="flex gap-2">
