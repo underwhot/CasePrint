@@ -16,3 +16,11 @@ export function wrapAccentInSpan(
   const regex = new RegExp(`(${accent})`, "gi");
   return text.replace(regex, `<span class="${className}">$1</span>`);
 }
+
+export function formatPrice(price: number) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 2,
+  }).format(price);
+}
