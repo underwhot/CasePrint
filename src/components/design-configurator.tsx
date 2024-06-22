@@ -1,11 +1,10 @@
 "use client";
 
-import Image from "next/image";
-
+import NextImage from "next/image";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { cn, formatPrice } from "@/lib/utils";
 import { Rnd } from "react-rnd";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   COLORS,
   FINISHES,
@@ -19,11 +18,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
 import { Separator } from "./ui/separator";
 import { Button } from "./ui/button";
 import { ArrowRight } from "lucide-react";
 import { BASE_PRICE } from "@/config/products";
+import { useUploadThing } from "@/lib/uploadthing";
+import { useToast } from "./ui/use-toast";
 
 type DesignConfiguratorProps = {
   configId?: string;
@@ -34,10 +34,23 @@ type DesignConfiguratorProps = {
   };
 };
 
+function base64ToBlob(base64: string, mime: string) {
+  const byteCharacters = atob(base64);
+  const byteNumbers = new Array(byteCharacters.length);
+
+  for (let i = 0; i < byteCharacters.length; i++) {
+    byteNumbers[i] = byteCharacters.charCodeAt(i);
+  }
+
+  const byteArray = new Uint8Array(byteNumbers);
+
+  return new Blob([byteArray], { type: mime });
+}
+
 export default function DesignConfigurator({
   configId,
   imageUrl,
-  imageDimensions: { width, height },
+  imageDimensions,
 }: DesignConfiguratorProps) {
   const [options, setOptions] = useState<{
     color: (typeof COLORS)[number];
@@ -50,18 +63,87 @@ export default function DesignConfigurator({
     material: MATERIALS.options[0],
     finish: FINISHES.options[0],
   });
+  const [renderedDimensions, setRenderedDimensions] = useState({
+    width: imageDimensions.width / 4,
+    height: imageDimensions.height / 4,
+  });
+  const [renderedPosition, setRenderedPosition] = useState({
+    x: 50,
+    y: 50,
+  });
+  const phoneCaseRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  console.log(options);
+  const { startUpload } = useUploadThing("imageUploader");
+  const { toast } = useToast();
+
+  const totalPrice = formatPrice(
+    (BASE_PRICE + options.material.price + options.finish.price) / 100,
+  );
+
+  async function saveCunfiguration() {
+    try {
+      const {
+        left: caseLeft,
+        top: caseTop,
+        width: caseWidth,
+        height: caseHeight,
+      } = phoneCaseRef.current!.getBoundingClientRect();
+
+      const { left: containerLeft, top: containerTop } =
+        containerRef.current!.getBoundingClientRect();
+
+      const leftOffset = caseLeft - containerLeft;
+      const topOffset = caseTop - containerTop;
+
+      const actualX = renderedPosition.x - leftOffset;
+      const actualY = renderedPosition.y - topOffset;
+
+      const canvas = document.createElement("canvas");
+      canvas.width = caseWidth;
+      canvas.height = caseHeight;
+      const ctx = canvas.getContext("2d")!;
+
+      const userImage = new Image();
+      userImage.crossOrigin = "anonymous";
+      userImage.src = imageUrl;
+      await new Promise((resolve) => (userImage.onload = resolve));
+
+      ctx?.drawImage(
+        userImage,
+        actualX,
+        actualY,
+        renderedDimensions.width,
+        renderedDimensions.height,
+      );
+
+      const base64 = canvas.toDataURL();
+      const base64Data = base64.split(",")[1];
+
+      const blob = base64ToBlob(base64Data, "image/png");
+      const file = new File([blob], "image.png", { type: "image/png" });
+
+      await startUpload([file], { configId: undefined });
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "Something went wrong",
+        description: "Please try again later.",
+        variant: "destructive",
+      });
+    }
+  }
 
   return (
-    <div className="flex flex-1 gap-4 flex-col md:flex-row">
-      <div className="flex flex-auto select-none flex-col items-center justify-center overflow-hidden rounded-lg bg-muted px-4 py-10 sm:p-10 ">
-        <div className="relative w-60 select-none">
+    <div className="flex flex-1 flex-col gap-4 md:flex-row">
+      <div className="flex flex-auto select-none flex-col items-center justify-center overflow-hidden rounded-lg bg-muted px-4 py-10 sm:p-10">
+        <div ref={containerRef} className="relative w-60 select-none">
           <AspectRatio
+            ref={phoneCaseRef}
             ratio={896 / 1831}
             className="pointer-events-none z-40 select-none"
           >
-            <Image
+            <NextImage
               src="/case-template.png"
               alt="Phone template"
               className="pointer-events-none z-40 select-none"
@@ -79,7 +161,24 @@ export default function DesignConfigurator({
           />
 
           <Rnd
-            default={{ x: 50, y: 50, width: width / 4, height: height / 4 }}
+            onResizeStop={(_, __, ref, ___, { x, y }) => {
+              setRenderedDimensions({
+                width: parseInt(ref.style.width.slice(0, -2)),
+                height: parseInt(ref.style.height.slice(0, -2)),
+              });
+
+              setRenderedPosition({ x, y });
+            }}
+            onDragStop={(_, data) => {
+              const { x, y } = data;
+              setRenderedPosition({ x, y });
+            }}
+            default={{
+              x: 50,
+              y: 50,
+              width: imageDimensions.width / 4,
+              height: imageDimensions.height / 4,
+            }}
             lockAspectRatio
             resizeHandleComponent={{
               bottomRight: <HandleComponent />,
@@ -99,11 +198,13 @@ export default function DesignConfigurator({
             }}
           >
             <div className="relative z-40 h-full w-full">
-              <Image
+              <NextImage
                 src={imageUrl}
                 alt="User's image"
-                fill
-                className="pointer-events-none"
+                width="0"
+                height="0"
+                sizes="100vw"
+                className="pointer-events-none h-auto w-full"
                 priority
               />
             </div>
@@ -153,6 +254,7 @@ export default function DesignConfigurator({
           <legend>Model:</legend>
           <Select
             onValueChange={(val) =>
+              // @ts-ignore
               setOptions((prev) => ({ ...prev, model: val }))
             }
           >
@@ -258,14 +360,9 @@ export default function DesignConfigurator({
         <div className="">
           <div className="mb-2 flex justify-between gap-2 text-lg">
             <p className="">Total:</p>
-            <p className="text-right">
-              {formatPrice(
-                (BASE_PRICE + options.material.price + options.finish.price) /
-                  100,
-              )}
-            </p>
+            <p className="text-right">{totalPrice}</p>
           </div>
-          <Button className="w-full">
+          <Button onClick={() => saveCunfiguration()} className="w-full">
             Continue <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </div>

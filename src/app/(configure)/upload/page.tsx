@@ -3,7 +3,6 @@
 import { Progress } from "@/components/ui/progress";
 import { useUploadThing } from "@/lib/uploadthing";
 import {
-  ArrowRight,
   Image,
   Loader2,
   MousePointerSquareDashed,
@@ -12,7 +11,6 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import Dropzone, { FileRejection } from "react-dropzone";
 import { useToast } from "@/components/ui/use-toast";
-import Steps from "@/components/steps";
 
 export default function UploadPage() {
   const [isDragOver, setIsDragOver] = useState(false);

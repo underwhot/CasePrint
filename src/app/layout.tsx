@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
+import Providers from "@/components/Providers";
 
 import Header from "@/components/header";
 import Footer from "@/components/footer";
@@ -33,7 +34,9 @@ export default function RootLayout({
         >
           <Header />
 
-          <main className="flex flex-1 flex-col">{children}</main>
+          <main className="flex flex-1 flex-col">
+            <Providers>{children}</Providers>
+          </main>
 
           <Toaster />
 
