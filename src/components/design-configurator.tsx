@@ -24,9 +24,15 @@ import { ArrowRight } from "lucide-react";
 import { BASE_PRICE } from "@/config/products";
 import { useUploadThing } from "@/lib/uploadthing";
 import { useToast } from "./ui/use-toast";
+import { useMutation } from "@tanstack/react-query";
+import {
+  SaveConfigArgs,
+  saveConfig as _saveConfig,
+} from "@/app/(configure)/design/actions";
+import { useRouter } from "next/navigation";
 
 type DesignConfiguratorProps = {
-  configId?: string;
+  configId: string;
   imageUrl: string;
   imageDimensions: {
     width: number;
@@ -76,6 +82,24 @@ export default function DesignConfigurator({
 
   const { startUpload } = useUploadThing("imageUploader");
   const { toast } = useToast();
+
+  const router = useRouter();
+
+  const { mutate: saveConfig } = useMutation({
+    mutationKey: ["save-config"],
+    mutationFn: async (args: SaveConfigArgs) => {
+      await Promise.all([saveCunfiguration(), _saveConfig(args)]);
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Your design could not be saved. Please try again.",
+      });
+    },
+    onSuccess: () => {
+      router.push(`/preview?id=${configId}`);
+    },
+  });
 
   const totalPrice = formatPrice(
     (BASE_PRICE + options.material.price + options.finish.price) / 100,
@@ -362,7 +386,18 @@ export default function DesignConfigurator({
             <p className="">Total:</p>
             <p className="text-right">{totalPrice}</p>
           </div>
-          <Button onClick={() => saveCunfiguration()} className="w-full">
+          <Button
+            onClick={() =>
+              saveConfig({
+                configId,
+                color: options.color.value,
+                model: options.model.value,
+                material: options.material.value,
+                finish: options.finish.value,
+              })
+            }
+            className="w-full"
+          >
             Continue <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </div>

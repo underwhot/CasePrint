@@ -2,13 +2,13 @@ import DesignConfigurator from "@/components/design-configurator";
 import { db } from "@/db";
 import { notFound } from "next/navigation";
 
-type DesignProps = {
+type DesignPageProps = {
   searchParams: {
     [key: string]: string | string[] | undefined;
   };
 };
 
-export default async function DesignPage({ searchParams }: DesignProps) {
+export default async function DesignPage({ searchParams }: DesignPageProps) {
   const { id } = searchParams;
 
   if (!id || typeof id !== "string") {
