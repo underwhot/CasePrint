@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "./ui/separator";
 import { Button } from "./ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Loader2 } from "lucide-react";
 import { BASE_PRICE } from "@/config/products";
 import { useUploadThing } from "@/lib/uploadthing";
 import { useToast } from "./ui/use-toast";
@@ -85,7 +85,7 @@ export default function DesignConfigurator({
 
   const router = useRouter();
 
-  const { mutate: saveConfig } = useMutation({
+  const { mutate: saveConfig, isPending } = useMutation({
     mutationKey: ["save-config"],
     mutationFn: async (args: SaveConfigArgs) => {
       await Promise.all([saveCunfiguration(), _saveConfig(args)]);
@@ -147,7 +147,7 @@ export default function DesignConfigurator({
       const blob = base64ToBlob(base64Data, "image/png");
       const file = new File([blob], "image.png", { type: "image/png" });
 
-      await startUpload([file], { configId: undefined });
+      await startUpload([file], { configId });
     } catch (error) {
       console.error(error);
       toast({
@@ -236,7 +236,7 @@ export default function DesignConfigurator({
         </div>
       </div>
 
-      <div className="flex-[0_0_300px]">
+      <div className="flex flex-[0_0_300px] flex-col">
         <h2 className="text-xl">Customize your case</h2>
 
         <Separator className="my-4" />
@@ -381,12 +381,13 @@ export default function DesignConfigurator({
 
         <Separator className="my-4" />
 
-        <div className="">
+        <div className="mt-auto">
           <div className="mb-2 flex justify-between gap-2 text-lg">
             <p className="">Total:</p>
             <p className="text-right">{totalPrice}</p>
           </div>
           <Button
+            disabled={isPending}
             onClick={() =>
               saveConfig({
                 configId,
@@ -398,7 +399,12 @@ export default function DesignConfigurator({
             }
             className="w-full"
           >
-            Continue <ArrowRight className="ml-2 h-4 w-4" />
+            Continue{" "}
+            {isPending ? (
+              <Loader2 className="ml-2 h-4 w-4 animate-spin" />
+            ) : (
+              <ArrowRight className="ml-2 h-4 w-4" />
+            )}
           </Button>
         </div>
       </div>

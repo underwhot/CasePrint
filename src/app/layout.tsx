@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Recursive } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import Providers from "@/components/Providers";
@@ -9,7 +9,7 @@ import Footer from "@/components/footer";
 
 import "../styles/globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Recursive({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Case Shop",

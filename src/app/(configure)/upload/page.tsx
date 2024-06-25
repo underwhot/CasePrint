@@ -2,15 +2,12 @@
 
 import { Progress } from "@/components/ui/progress";
 import { useUploadThing } from "@/lib/uploadthing";
-import {
-  Image,
-  Loader2,
-  MousePointerSquareDashed,
-} from "lucide-react";
+import { Image, Loader2, MousePointerSquareDashed } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import Dropzone, { FileRejection } from "react-dropzone";
 import { useToast } from "@/components/ui/use-toast";
+import { cn } from "@/lib/utils";
 
 export default function UploadPage() {
   const [isDragOver, setIsDragOver] = useState(false);
@@ -62,7 +59,13 @@ export default function UploadPage() {
       {({ getRootProps, getInputProps }) => (
         <div
           {...getRootProps()}
-          className="flex w-full cursor-pointer flex-col items-center justify-center rounded-lg bg-muted p-4 transition hover:bg-muted/50 sm:p-10"
+          className={cn(
+            "flex w-full cursor-pointer flex-col items-center justify-center rounded-lg bg-muted p-4 transition hover:bg-muted/50 sm:p-10",
+            {
+              "pointer-events-none": isUploading || isPending,
+              "cursor-not-allowed": isUploading || isPending,
+            },
+          )}
         >
           <input {...getInputProps()} />
           {isDragOver ? (
@@ -90,7 +93,7 @@ export default function UploadPage() {
 
             {isPending ? null : (
               <p className="mt-4 text-sm text-muted-foreground">
-                PNG, JPG, JPEG <br /> File size limit: 5MB
+                PNG, JPG, JPEG <br /> File size limit: 4MB
               </p>
             )}
           </div>
