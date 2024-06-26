@@ -6,14 +6,21 @@ import Confetti from "react-dom-confetti";
 import PhoneTemplate from "./phone-template";
 import { COLORS, MODELS } from "@/validators/option-validator";
 import { Separator } from "./ui/separator";
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { BASE_PRICE, PRODUCT_PRICES } from "@/config/products";
 import { formatPrice } from "@/lib/utils";
 import { Button } from "./ui/button";
 import { useMutation } from "@tanstack/react-query";
+import { createCheckoutSession } from "@/app/(configure)/preview/actions";
+import { useRouter } from "next/navigation";
+import { useToast } from "./ui/use-toast";
+import LoginModal from "./login-modal";
 
 type DesignPreviewProps = {
   configuration: Configuration;
+  user: any;
+  signInUrl: string;
+  signUpUrl: string;
 };
 
 const HIGHLIGHTS_FEATURES = [
@@ -22,13 +29,17 @@ const HIGHLIGHTS_FEATURES = [
   "High-quality, durable material",
 ];
 
-const MATERIALS_FEATURES = [
-  "High-quality, durable material",
-  "Scratch- and fingerprint resistant coating",
-];
-
-export default function DesignPreview({ configuration }: DesignPreviewProps) {
+export default function DesignPreview({
+  configuration,
+  user,
+  signInUrl,
+  signUpUrl,
+}: DesignPreviewProps) {
   const [showConfetti, setShowConfetti] = useState(false);
+  const router = useRouter();
+  const { toast } = useToast();
+  const { id } = configuration;
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
   useEffect(() => {
     setShowConfetti(true);
@@ -48,12 +59,30 @@ export default function DesignPreview({ configuration }: DesignPreviewProps) {
     totalPrice += PRODUCT_PRICES.material.polycarbonate;
   if (finish === "textured") totalPrice += PRODUCT_PRICES.finish.textured;
 
-  const {} = useMutation({
+  const { mutate: createPaymentSession } = useMutation({
     mutationKey: ["get-checkout-session"],
-    // mutationFn: () => {
-      
-    // }
-  })
+    mutationFn: createCheckoutSession,
+    onSuccess: ({ url }) => {
+      if (url) router.push(url);
+      else throw new Error("Unable to retrive payment URL");
+    },
+    onError: () => {
+      toast({
+        title: "Something went wrong",
+        description: "There was an error on the server. Please try again",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleCheckout = () => {
+    if (user) {
+      createPaymentSession({ configId: id });
+    } else {
+      localStorage.setItem("configurationId", id);
+      setIsLoginModalOpen(true);
+    }
+  };
 
   return (
     <>
@@ -66,13 +95,21 @@ export default function DesignPreview({ configuration }: DesignPreviewProps) {
           config={{ elementCount: 200, spread: 90 }}
         />
       </div>
+
+      <LoginModal
+        isOpen={isLoginModalOpen}
+        setIsOpen={setIsLoginModalOpen}
+        signInUrl={signInUrl}
+        signUpUrl={signUpUrl}
+      />
+
       <div className="flex flex-1 flex-col gap-4 md:flex-row">
         <div className="flex flex-auto select-none flex-col items-center justify-center overflow-hidden rounded-lg bg-muted px-4 py-10 sm:p-10">
           <div className="pointer-events-none relative min-h-[488px] w-60 select-none overflow-hidden rounded-[36px]">
             <PhoneTemplate imageSrc={configuration.croppedImageUrl!} bg={tw} />
           </div>
         </div>
-        <div className="flex-[0_0_300px] flex flex-col">
+        <div className="flex flex-[0_0_300px] flex-col">
           <h2 className="text-xl">Summary</h2>
 
           <Separator className="my-4" />
@@ -112,11 +149,11 @@ export default function DesignPreview({ configuration }: DesignPreviewProps) {
 
           <Separator className="my-4" />
 
-          <div className="mb-2 flex justify-between gap-2 text-lg mt-auto">
+          <div className="mb-2 mt-auto flex justify-between gap-2 text-lg">
             <p className="">Total:</p>
             <p className="text-right">{formatPrice(totalPrice / 100)}</p>
           </div>
-          <Button onClick={() => {}} className="w-full">
+          <Button onClick={() => handleCheckout()} className="w-full">
             Check out <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </div>

@@ -44,6 +44,7 @@ export default function PhoneTemplate({ imageSrc, bg }: PhoneTemplateProps) {
         height="0"
         sizes="100vw"
         alt="Case example"
+        priority
       />
     </div>
   );

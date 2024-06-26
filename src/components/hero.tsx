@@ -28,7 +28,7 @@ export default function Hero() {
 
         <p>
           Capture your favorite memories with your own, one-of-one phone case.
-          CaseCobra allows you to protect your memories, not just your phone
+          CasePrint allows you to protect your memories, not just your phone
           case.
         </p>
 

@@ -30,6 +30,14 @@ import {
   saveConfig as _saveConfig,
 } from "@/app/(configure)/design/actions";
 import { useRouter } from "next/navigation";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 
 type DesignConfiguratorProps = {
   configId: string;
@@ -276,23 +284,22 @@ export default function DesignConfigurator({
 
         <div className="flex items-center gap-4">
           <legend>Model:</legend>
-          <Select
-            onValueChange={(val) =>
-              // @ts-ignore
-              setOptions((prev) => ({ ...prev, model: val }))
-            }
-          >
-            <SelectTrigger>
-              <SelectValue placeholder={options.model.label} />
-            </SelectTrigger>
-            <SelectContent>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="secondary">{options.model.label}</Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
               {MODELS.options.map((model) => (
-                <SelectItem key={model.value} value={model.value}>
+                <DropdownMenuItem
+                  key={model.value}
+                  className="cursor-pointer"
+                  onClick={() => setOptions((prev) => ({ ...prev, model }))}
+                >
                   {model.label}
-                </SelectItem>
+                </DropdownMenuItem>
               ))}
-            </SelectContent>
-          </Select>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
         <Separator className="my-4" />

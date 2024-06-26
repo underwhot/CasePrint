@@ -9,6 +9,7 @@ type DesignPageProps = {
 };
 
 export default async function DesignPage({ searchParams }: DesignPageProps) {
+
   const { id } = searchParams;
 
   if (!id || typeof id !== "string") {

@@ -1,5 +1,10 @@
 import DesignPreview from "@/components/design-preview";
 import { db } from "@/db";
+import {
+  getSignInUrl,
+  getSignUpUrl,
+  getUser,
+} from "@workos-inc/authkit-nextjs";
 import { notFound } from "next/navigation";
 
 type PreviewPageProps = {
@@ -9,6 +14,9 @@ type PreviewPageProps = {
 };
 
 export default async function PreviewPage({ searchParams }: PreviewPageProps) {
+  const { user } = await getUser();
+  const signInUrl = await getSignInUrl();
+  const signUpUrl = await getSignUpUrl();
   const { id } = searchParams;
 
   if (!id || typeof id !== "string") {
@@ -23,5 +31,12 @@ export default async function PreviewPage({ searchParams }: PreviewPageProps) {
     return notFound();
   }
 
-  return <DesignPreview configuration={configuration} />;
+  return (
+    <DesignPreview
+      configuration={configuration}
+      signInUrl={signInUrl}
+      signUpUrl={signUpUrl}
+      user={user}
+    />
+  );
 }
