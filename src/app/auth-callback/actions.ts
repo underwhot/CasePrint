@@ -5,7 +5,6 @@ import { getUser } from "@workos-inc/authkit-nextjs";
 
 export const getAuthStatus = async () => {
   const { user } = await getUser();
-  console.log(user)
 
   if (!user?.id || !user.email) {
     throw new Error("Invalid user data");
