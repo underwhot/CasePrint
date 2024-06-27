@@ -75,6 +75,8 @@ export default function DesignPreview({
     },
   });
 
+  console.log(user);
+
   const handleCheckout = () => {
     if (user) {
       createPaymentSession({ configId: id });

@@ -12,13 +12,11 @@ export const createCheckoutSession = async ({
   configId: string;
 }) => {
   const configuration = await db.configuration.findUnique({
-    where: {
-      id: configId,
-    },
+    where: { id: configId },
   });
 
   if (!configuration) {
-    throw new Error("Configuration not found");
+    throw new Error("No such configuration found");
   }
 
   const { user } = await getUser();
@@ -59,16 +57,17 @@ export const createCheckoutSession = async ({
     name: "Custom Case",
     images: [configuration.imageUrl],
     default_price_data: {
-      currency: "usd",
+      currency: "USD",
       unit_amount: price,
     },
   });
 
-  const stripeSeccion = await stripe.checkout.sessions.create({
-    success_url: `${process.env.NEXT_PUBLICK_SERVER_URL}/thank-you?orderId=${order.id}`,
-    cancel_url: `${process.env.NEXT_PUBLICK_SERVER_URL}/preview?id=${configuration.id}`,
+  const stripeSession = await stripe.checkout.sessions.create({
+    success_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/thank-you?orderId=${order.id}`,
+    cancel_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/configure/preview?id=${configuration.id}`,
     payment_method_types: ["card", "paypal"],
-    shipping_address_collection: { allowed_countries: ["US", "DE", "UA"] },
+    mode: "payment",
+    shipping_address_collection: { allowed_countries: ["DE", "US"] },
     metadata: {
       userId: user.id,
       orderId: order.id,
@@ -76,5 +75,5 @@ export const createCheckoutSession = async ({
     line_items: [{ price: product.default_price as string, quantity: 1 }],
   });
 
-  return { url: stripeSeccion.url };
+  return { url: stripeSession.url };
 };
