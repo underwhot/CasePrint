@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     const signature = headers().get("stripe-signature");
 
     if (!signature) {
-      return new Response("No signature", { status: 400 });
+      return new Response("Invalid signature", { status: 400 });
     }
 
     const event = stripe.webhooks.constructEvent(
@@ -21,10 +21,11 @@ export async function POST(req: NextRequest) {
 
     if (event.type === "checkout.session.completed") {
       if (!event.data.object.customer_details?.email) {
-        throw new Error("No customer email");
+        throw new Error("Missing user email");
       }
 
       const session = event.data.object as Stripe.Checkout.Session;
+
       const { userId, orderId } = session.metadata || {
         userId: null,
         orderId: null,
@@ -38,7 +39,9 @@ export async function POST(req: NextRequest) {
       const shippingAddress = session.shipping_details!.address;
 
       await db.order.update({
-        where: { id: orderId },
+        where: {
+          id: orderId,
+        },
         data: {
           isPaid: true,
           shippingAddress: {
@@ -71,9 +74,8 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error(error);
 
-    // return NextResponse.json({ error: (error as Error).message }, { status: 500 });
     return NextResponse.json(
-      { message: "Something went wrong" },
+      { message: "Something went wrong", ok: false },
       { status: 500 },
     );
   }
