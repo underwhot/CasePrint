@@ -12,8 +12,8 @@ import "../styles/globals.css";
 const inter = Recursive({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Case Shop",
-  description: "Printful Case Shop",
+  title: "Case Print",
+  description: "Printful Cases Shop",
 };
 
 export default function RootLayout({
