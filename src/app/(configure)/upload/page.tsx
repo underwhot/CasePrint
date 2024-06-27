@@ -2,7 +2,11 @@
 
 import { Progress } from "@/components/ui/progress";
 import { useUploadThing } from "@/lib/uploadthing";
-import { Image, Loader2, MousePointerSquareDashed } from "lucide-react";
+import {
+  Image as ImageIcon,
+  Loader2,
+  MousePointerSquareDashed,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import Dropzone, { FileRejection } from "react-dropzone";
@@ -73,7 +77,7 @@ export default function UploadPage() {
           ) : isUploading || isPending ? (
             <Loader2 className="h-6 w-6 animate-spin" />
           ) : (
-            <Image className="h-6 w-6" />
+            <ImageIcon className="h-6 w-6" />
           )}
           <div className="mx-auto mt-4 min-w-[200px] text-center">
             {isUploading ? (

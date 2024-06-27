@@ -1,4 +1,4 @@
-import { Check, Star } from "lucide-react";
+import { Star } from "lucide-react";
 import Image from "next/image";
 import FeaturesList from "./featuresList";
 
@@ -78,12 +78,16 @@ export default function Hero() {
             height={528}
             priority
           />
-          <img
+          <Image
+            width={208}
+            height={143}
             src="/your-image.png"
             alt=""
             className="absolute -top-16 left-56 hidden w-36 select-none sm:-top-20 sm:w-52 min-[1350px]:block"
           />
-          <img
+          <Image
+            width={80}
+            height={143}
             src="/line.png"
             alt=""
             className="absolute -bottom-6 -left-6 w-20 select-none"

@@ -25,9 +25,8 @@ export default function Navbar({
   const [isOpen, setIsOpen] = useState(false);
   const navRef = useRef(null);
   const navBtn = useRef(null);
-  let scrollBarWidth = 0;
 
-  const openNav = () => {
+  const toggleNavbar = () => {
     setIsOpen((prev) => !prev);
   };
 
@@ -37,28 +36,29 @@ export default function Navbar({
 
   useOnClickOutside([navRef, navBtn], handleClickOutside);
 
-  useEffect(() => {
-    scrollBarWidth = getScrollbarWidth();
+  // let scrollBarWidth = 0;
+  // useEffect(() => {
+  //   scrollBarWidth = getScrollbarWidth();
 
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-      // document.body.style.touchAction = "none";
-      document.body.style.paddingRight = scrollBarWidth + "px";
-      document.getElementsByTagName("header")[0].style.paddingRight =
-        scrollBarWidth + "px";
-    } else {
-      document.body.style.overflow = "";
-      document.body.style.paddingRight = "0px";
-      document.getElementsByTagName("header")[0].style.paddingRight = "0px";
-    }
-  }, [isOpen]);
+  //   if (isOpen) {
+  //     document.body.style.overflow = "hidden";
+  //     // document.body.style.touchAction = "none";
+  //     document.body.style.paddingRight = scrollBarWidth + "px";
+  //     document.getElementsByTagName("header")[0].style.paddingRight =
+  //       scrollBarWidth + "px";
+  //   } else {
+  //     document.body.style.overflow = "";
+  //     document.body.style.paddingRight = "0px";
+  //     document.getElementsByTagName("header")[0].style.paddingRight = "0px";
+  //   }
+  // }, [isOpen]);
 
   return (
     <>
       <Button
         ref={navBtn}
         variant="ghost"
-        onClick={openNav}
+        onClick={toggleNavbar}
         className="relative z-50 w-9 overflow-hidden sm:hidden"
       >
         <Menu
@@ -116,7 +116,13 @@ export default function Navbar({
           <Separator orientation="vertical" className="h-auto self-stretch" />
 
           <li>
-            <Button asChild variant="default">
+            <Button
+              asChild
+              variant="default"
+              onClick={() => {
+                setIsOpen(false);
+              }}
+            >
               <Link href="/upload" className="flex gap-2">
                 Create case <ArrowRight />
               </Link>

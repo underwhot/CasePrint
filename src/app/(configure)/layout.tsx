@@ -1,4 +1,5 @@
-import Steps from "@/components/Steps";
+import Steps from "@/components/steps";
+
 
 export default function ConfigureLayout({
   children,
