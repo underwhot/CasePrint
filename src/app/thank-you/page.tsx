@@ -1,6 +1,10 @@
+import { Suspense } from "react";
+import ThankYou from "@/components/thank-you";
 
-export default function ThankYou() {
+export default function ThankYouPage() {
   return (
-    <div>ThankYou</div>
+    // <Suspense>
+      <ThankYou />
+    // </Suspense>
   )
 }
