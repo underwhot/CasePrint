@@ -14,6 +14,7 @@ type NavbarProps = {
   signUpUrl: string;
   user: any;
   handleSignOut: () => Promise<void>;
+  isAdmin: boolean;
 };
 
 export default function Navbar({
@@ -21,6 +22,7 @@ export default function Navbar({
   signUpUrl,
   user,
   handleSignOut,
+  isAdmin,
 }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const navRef = useRef(null);
@@ -95,7 +97,15 @@ export default function Navbar({
           {user && (
             <>
               <li>
-                <p className="text-sm">{user.email}</p>
+                <p className="text-sm">
+                  {!isAdmin ? (
+                    user.email
+                  ) : (
+                    <Button asChild variant="secondary">
+                      <Link href="/dashboard">{user.email}</Link>
+                    </Button>
+                  )}
+                </p>
               </li>
               <li>
                 <form action={handleSignOut}>

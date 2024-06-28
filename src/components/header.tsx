@@ -12,6 +12,8 @@ export default async function Header() {
   const signInUrl = await getSignInUrl();
   const signUpUrl = await getSignUpUrl();
 
+  const isAdmin = user?.email === process.env.ADMIN_EMAIL;
+
   const handleSignOut = async () => {
     "use server";
     await signOut();
@@ -29,6 +31,7 @@ export default async function Header() {
           signUpUrl={signUpUrl}
           user={user}
           handleSignOut={handleSignOut}
+          isAdmin={isAdmin}
         />
       </div>
     </header>
