@@ -134,7 +134,7 @@ export default function Navbar({
               }}
             >
               <Link href="/upload" className="flex gap-2">
-                Create case <ArrowRight />
+                Create case <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
           </li>

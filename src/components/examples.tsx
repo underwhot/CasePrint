@@ -20,6 +20,10 @@ export default function Examples() {
   const col2 = useTransform(scrollYProgress, [0, 1], [-100, 100]);
   const col3 = useTransform(scrollYProgress, [0, 1], [150, -50]);
 
+  const leftToRight = useTransform(scrollYProgress, [0, 1], [-100, 50]);
+  const rightToLeft = useTransform(scrollYProgress, [0, 1], [100, -50]);
+
+
   return (
     <section className="container">
       <TagH2 accent="people">What people are buying</TagH2>
@@ -29,7 +33,7 @@ export default function Examples() {
       >
         <motion.div
           className="relative flex flex-col gap-8"
-          style={{ y: col1 }}
+          style={{ y: col1, x: leftToRight }}
         >
           <ExampleImage imageSrc="/testimonials/1.jpg" theme={theme} />
           <ExampleImage imageSrc="/testimonials/2.jpg" theme={theme} />
@@ -38,7 +42,7 @@ export default function Examples() {
           <ExampleImage imageSrc="/testimonials/3.jpg" theme={theme} />
           <ExampleImage imageSrc="/testimonials/4.jpg" theme={theme} />
         </motion.div>
-        <motion.div className="flex flex-col gap-8" style={{ y: col3 }}>
+        <motion.div className="flex flex-col gap-8" style={{ y: col3, x: rightToLeft }}>
           <ExampleImage imageSrc="/testimonials/5.jpg" theme={theme} />
           <ExampleImage imageSrc="/testimonials/6.jpg" theme={theme} />
         </motion.div>

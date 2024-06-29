@@ -58,7 +58,7 @@ export default function Features() {
 
       <Button asChild variant="default">
         <Link href="/upload" className="flex gap-2">
-          Create your case now <ArrowRight />
+          Create your case now <ArrowRight className="h-4 w-4" />
         </Link>
       </Button>
     </section>
