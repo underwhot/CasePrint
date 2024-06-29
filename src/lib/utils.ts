@@ -1,4 +1,5 @@
 import { type ClassValue, clsx } from "clsx";
+import { Metadata } from "next";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -23,4 +24,42 @@ export function formatPrice(price: number) {
     currency: "USD",
     maximumFractionDigits: 2,
   }).format(price);
+}
+
+export function constructMetadata({
+  title = "CasePrint | Printful Cases Shop",
+  description = "Print your phone case with ease",
+  image = "/thumbnail.png",
+  icons = "/favicon.ico",
+}: {
+  title?: string;
+  description?: string;
+  image?: string;
+  icons?: string;
+} = {}): Metadata {
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: [
+        {
+          url: image,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [
+        {
+          url: image,
+        },
+      ],
+    },
+    icons,
+    metadataBase: new URL("https://case-print.vercel.app/"),
+  };
 }

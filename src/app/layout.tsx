@@ -1,9 +1,8 @@
-import type { Metadata } from "next";
+import { constructMetadata } from "@/lib/utils";
 import { Recursive } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import Providers from "@/components/providers";
-
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 
@@ -11,10 +10,7 @@ import "../styles/globals.css";
 
 const inter = Recursive({ subsets: ["latin"] });
 
-export const metadata: Metadata = {
-  title: "Case Print",
-  description: "Printful Cases Shop",
-};
+export const metadata = constructMetadata();
 
 export default function RootLayout({
   children,

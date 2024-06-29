@@ -11,13 +11,6 @@ import {
   MATERIALS,
   MODELS,
 } from "@/validators/option-validator";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Separator } from "./ui/separator";
 import { Button } from "./ui/button";
 import { ArrowRight, Loader2 } from "lucide-react";
@@ -34,8 +27,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 
