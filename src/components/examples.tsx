@@ -20,11 +20,11 @@ export default function Examples() {
   const col2 = useTransform(scrollYProgress, [0, 1], [-100, 100]);
   const col3 = useTransform(scrollYProgress, [0, 1], [150, -50]);
 
-  const leftToRight = useTransform(scrollYProgress, [0, 1], [-100, 50]);
-  const rightToLeft = useTransform(scrollYProgress, [0, 1], [100, -50]);
+  const leftToRight = useTransform(scrollYProgress, [0, 1], [-100, 25]);
+  const rightToLeft = useTransform(scrollYProgress, [0, 1], [100, -25]);
 
   return (
-    <section className="container">
+    <section className="container overflow-hidden">
       <TagH2 accent="people">What people are buying</TagH2>
       <div
         ref={ref}
